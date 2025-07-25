@@ -1,0 +1,4 @@
+codigo,nombre,tipo,porcentaje,activo
+SALUD,"Aporte a Salud (4%)",DED,0.04,true
+PENSION,"Aporte a Pensión (4%)",DED,0.04,true
+AUX_TRANS,"Auxilio de Transporte",DEV,0,true

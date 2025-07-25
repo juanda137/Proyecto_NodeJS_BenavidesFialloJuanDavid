@@ -1,0 +1,4 @@
+codigo,nombre,activo,area_codigo,area_nombre
+CONT-01,"Contador",true,"ADM-01","Administración y Finanzas"
+DEV-JR,"Desarrollador Junior",true,"TEC-01","Tecnología"
+DEV-SR,"Desarrollador Senior",true,"TEC-01","Tecnología"

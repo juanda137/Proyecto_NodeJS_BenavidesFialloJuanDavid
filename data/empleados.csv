@@ -1,0 +1,5 @@
+tipo_identificacion,numero_identificacion,nombres,apellidos,genero,activo,direccion_descripcion,direccion_ciudad,direccion_departamento,contrato_fecha_inicio,contrato_salario_base,contrato_activo,contrato_tipo_codigo,contrato_cargo_codigo,contrato_area_codigo
+CC,1020304050,Ana,García,F,true,"Calle 100 # 20-30","Bogotá D.C.","Cundinamarca",2024-01-15,4500000,true,CI,DEV-SR,TEC-01
+CC,2030405060,Carlos,Rodríguez,M,true,"Carrera 5 # 15-25",Medellín,Antioquia,2024-06-01,2200000,true,CTF,DEV-JR,TEC-01
+CE,3040506070,Sofía,Martínez,F,true,"Avenida Principal # 1-2",Cali,"Valle del Cauca",2023-11-10,3000000,true,CI,CONT-01,ADM-01
+CC,4050607080,Luis,Hernández,M,true,"Transversal 10 # 80-90","Bogotá D.C.","Cundinamarca",2025-01-02,2500000,true,CTF,DEV-JR,TEC-01
