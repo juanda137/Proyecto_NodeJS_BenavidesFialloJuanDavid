@@ -1,7 +1,8 @@
 import readline from 'readline'
 import { MongoClient, ObjectId } from 'mongodb'
-import fs from 'fs'
+import fs, { read } from 'fs'
 import path from 'path'
+
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -42,6 +43,39 @@ async function payrollMenu() {
                 console.log('Invalid option.'); payrollMenu()
         }
     })
+}
+
+function readData() {
+    try {
+        const data = fs.readFileSync('', 'utf-8');
+
+        const lines = data.trim().split('\n');
+
+        if (lines.length <= 1) {
+            return [];
+        }
+
+        const headers = lines[0].split(',').map(header => header.trim());
+
+        const registros = lines.slice(1).map(line => {
+            const values = line.split(',').map(value => value.trim());
+            const record = {};
+            
+            headers.forEach((header, index) => {
+                record[header] = values[index];
+            });
+
+            return record;
+        });
+
+        console.log(data)
+        console.log(registros)
+        
+        return registros;
+
+    } catch (error) {
+        console.error("Error al leer el archivo datos.csv:", error);
+    }
 }
 
 menu()
