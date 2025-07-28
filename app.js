@@ -1,81 +1,126 @@
-import readline from 'readline'
-import { MongoClient, ObjectId } from 'mongodb'
-import fs, { read } from 'fs'
-import path from 'path'
+// app.js
+import readline from 'readline';
+import fs from 'fs';
+import path from 'path';
+import { uploadData } from './modules/readData.js';
+import { getActiveEmployeesByAreaAndPosition, getPayrollDetailsForEmployee, getEmployeesWithTransportAllowance, getPayrollSummary } from './modules/reports.js';
+import { generateActiveEmployeesHTML, generatePayrollDetailsHTML, generateTransportAllowanceHTML, generatePayrollSummaryHTML } from './modules/htmlGenerator.js';
 
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const question = (query) => new Promise(resolve => rl.question(query, resolve));
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
-
-async function menu() {
-    console.log('\n=== PAYROLL MANAGER ===')
-    console.log('1. Read data')
-    console.log('2. Reports')
-    console.log('3. Exit\n')
-
-    rl.question('Option: ', op => {
-        switch (op) {
-            case '1': readData(); break;
-            case '2': payrollMenu(); break;
-            case '3': rl.close(); break;
-            default:
-                console.log('Invalid option.'); menu()
-        }
-    })
+function saveReportToFile(reportName, htmlContent) {
+    const reportsDir = path.join(process.cwd(), 'reports');
+    if (!fs.existsSync(reportsDir)) {
+        fs.mkdirSync(reportsDir);
+    }
+    const filePath = path.join(reportsDir, `${reportName}.html`);
+    fs.writeFileSync(filePath, htmlContent);
+    console.log(`\n[DEBUG - app] ✅ ¡Reporte guardado exitosamente en: ${filePath}!\n`);
 }
+
 async function payrollMenu() {
-    console.log('\n===== PAYROLL REPORTS MENU =====');
-    console.log('1. List Employees by Department and Job Title');
-    console.log('2. View Employee Payroll Details');
-    console.log('3. List Employees with Transportation Allowance');
-    console.log('4. View General Payroll Summary');
-    console.log('5. Exit\n');
-    rl.question('opcion: ', op => {
+    let keepInMenu = true;
+    while (keepInMenu) {
+        console.log('\n===== GENERAR REPORTES EN HTML =====');
+        console.log('1. Listar Empleados por Departamento y Cargo');
+        console.log('2. Ver Detalles de Nómina de un Empleado');
+        console.log('3. Listar Empleados con Auxilio de Transporte');
+        console.log('4. Ver Resumen General de la Nómina');
+        console.log('5. Volver al menú principal\n');
+
+        const op = await question('Opción: ');
+
         switch (op) {
-            case '1':  listEmployersDepartmentJobTitle(); break;
-            case '2':  employersPayrollDetail(); break;
-            case '3':  listEmployersTransportAllowance(); break;
-            case '4':  payrollSummary(); break;
-            case '5':  menu(); break;
+            case '1': {
+                console.log('[DEBUG - app] Iniciando Reporte 1...');
+                const data = await getActiveEmployeesByAreaAndPosition();
+                console.log(`[DEBUG - app] Datos recibidos para Reporte 1 (cantidad: ${data.length})`);
+                if (data.length > 0) {
+                    const html = generateActiveEmployeesHTML(data);
+                    saveReportToFile('Reporte_Empleados_Activos', html);
+                } else {
+                    console.log('[DEBUG - app] ❌ No se encontraron datos para generar el reporte.');
+                }
+                break;
+            }
+            // ... (resto de los casos son similares y ya están bien)
+            case '2': {
+                const employeeId = await question('ID del empleado: ');
+                const payrollId = await question('Código de la nómina (ej: NOM-2025-01): ');
+                console.log(`[DEBUG - app] Iniciando Reporte 2 para empleado ${employeeId}...`);
+                const data = await getPayrollDetailsForEmployee(Number(employeeId), payrollId);
+                console.log(`[DEBUG - app] Datos recibidos para Reporte 2 (cantidad: ${data.length})`);
+                if (data.length > 0) {
+                    const html = generatePayrollDetailsHTML(data);
+                    saveReportToFile(`Detalle_Nomina_${employeeId}_${payrollId}`, html);
+                } else {
+                    console.log('[DEBUG - app] ❌ No se encontraron datos para la combinación de empleado y nómina.');
+                }
+                break;
+            }
+            case '3': {
+                console.log('[DEBUG - app] Iniciando Reporte 3...');
+                const data = await getEmployeesWithTransportAllowance();
+                console.log(`[DEBUG - app] Datos recibidos para Reporte 3 (cantidad: ${data.length})`);
+                if (data.length > 0) {
+                    const html = generateTransportAllowanceHTML(data);
+                    saveReportToFile('Reporte_Auxilio_Transporte', html);
+                } else {
+                    console.log('[DEBUG - app] ❌ No se encontraron empleados con auxilio de transporte.');
+                }
+                break;
+            }
+            case '4': {
+                const payrollId = await question('Código de la nómina (ej: NOM-2025-01): ');
+                console.log(`[DEBUG - app] Iniciando Reporte 4 para nómina ${payrollId}...`);
+                const data = await getPayrollSummary(payrollId);
+                console.log(`[DEBUG - app] Datos recibidos para Reporte 4 (cantidad: ${data.length})`);
+                if (data.length > 0) {
+                    const html = generatePayrollSummaryHTML(data);
+                    saveReportToFile(`Resumen_Nomina_${payrollId}`, html);
+                } else {
+                    console.log('[DEBUG - app] ❌ No se encontraron datos para esa nómina.');
+                }
+                break;
+            }
+            case '5':
+                keepInMenu = false;
+                break;
             default:
-                console.log('Invalid option.'); payrollMenu()
+                console.log('Opción no válida.');
+                break;
         }
-    })
-}
-
-function readData() {
-    try {
-        const data = fs.readFileSync('', 'utf-8');
-
-        const lines = data.trim().split('\n');
-
-        if (lines.length <= 1) {
-            return [];
-        }
-
-        const headers = lines[0].split(',').map(header => header.trim());
-
-        const registros = lines.slice(1).map(line => {
-            const values = line.split(',').map(value => value.trim());
-            const record = {};
-            
-            headers.forEach((header, index) => {
-                record[header] = values[index];
-            });
-
-            return record;
-        });
-
-        console.log(data)
-        console.log(registros)
-        
-        return registros;
-
-    } catch (error) {
-        console.error("Error al leer el archivo datos.csv:", error);
     }
 }
 
-menu()
+async function main() {
+    let keepAppRunning = true;
+    while (keepAppRunning) {
+        console.log('\n=== PAYROLL MANAGER ===');
+        console.log('1. Cargar datos a MongoDB');
+        console.log('2. Generar Reportes');
+        console.log('3. Salir\n');
+        
+        const op = await question('Opción: ');
+
+        switch (op) {
+            case '1':
+                await uploadData();
+                break;
+            case '2':
+                await payrollMenu();
+                break;
+            case '3':
+                keepAppRunning = false;
+                break;
+            default:
+                console.log('Opción no válida.');
+                break;
+        }
+    }
+    rl.close();
+    console.log('¡Hasta luego!');
+}
+
+main();
