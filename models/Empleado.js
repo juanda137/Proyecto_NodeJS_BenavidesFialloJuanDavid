@@ -11,8 +11,7 @@ export class Empleado {
         this.nombres = nombres;
         this.apellidos = apellidos;
         
-        // ✅ CORRECCIÓN DEFINITIVA: Estas dos líneas faltaban.
-        // Asignamos el género y el estado del empleado al nivel superior del documento.
+        // ✅ CORRECCIÓN DEFINITIVA: Se añaden las dos líneas que faltaban.
         this.genero = genero;
         this.activo = activo;
 
