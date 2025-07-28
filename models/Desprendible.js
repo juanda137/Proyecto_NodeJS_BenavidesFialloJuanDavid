@@ -1,6 +1,3 @@
-// models/Desprendible.js
-
-// ✅ CORRECCIÓN: Se añade la palabra 'export'
 export class Desprendible {
     constructor({
         nomina_codigo, empleado_identificacion, salario_base, dias_liquidados,

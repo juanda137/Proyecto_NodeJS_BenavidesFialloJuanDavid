@@ -1,6 +1,3 @@
-// models/Entidad.js
-
-// ✅ CORRECCIÓN: Se añade la palabra 'export'
 export class Entidad {
     constructor({ codigo, nombre, activo = true }) {
         this.codigo = codigo;

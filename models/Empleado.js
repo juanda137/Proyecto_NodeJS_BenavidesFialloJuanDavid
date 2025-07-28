@@ -1,4 +1,3 @@
-// models/Empleado.js
 export class Empleado {
     constructor({
         tipo_identificacion, numero_identificacion, nombres, apellidos, genero, activo,
@@ -10,11 +9,8 @@ export class Empleado {
         this.numero_identificacion = numero_identificacion;
         this.nombres = nombres;
         this.apellidos = apellidos;
-        
-        // ✅ CORRECCIÓN DEFINITIVA: Se añaden las dos líneas que faltaban.
         this.genero = genero;
         this.activo = activo;
-
         this.direccion = {
             descripcion: direccion_descripcion,
             ciudad: direccion_ciudad,

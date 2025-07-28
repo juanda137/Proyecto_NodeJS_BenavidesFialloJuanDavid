@@ -1,5 +1,3 @@
-// modules/htmlGenerator.js
-
 function getHtmlTemplate(title, bodyContent) {
     return `
         <!DOCTYPE html>
@@ -9,13 +7,13 @@ function getHtmlTemplate(title, bodyContent) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${title}</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+                body { font-family: Arial, sans-serif; margin: 20px;}
                 h1, h2 { color: #333; }
                 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #4CAF50; color: white; }
+                th { background-color: #3f23f0ff; color: white; }
                 tr:nth-child(even) { background-color: #f2f2f2; }
-                .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                .container { background-color: white; padding: 20px; border-radius: 8px;}
                 .total-row td { font-weight: bold; background-color: #e8e8e8; }
             </style>
         </head>
@@ -68,7 +66,7 @@ export function generateActiveEmployeesHTML(data) {
             </tr>
         `;
         if (index === data.length - 1) {
-             bodyContent += `</tbody></table>`;
+            bodyContent += `</tbody></table>`;
         }
     });
 
