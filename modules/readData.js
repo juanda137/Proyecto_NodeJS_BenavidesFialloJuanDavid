@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { EntityFactory } from '../models/EntityFactory.js';
 
-const uri = "mongodb+srv://juanda137:uqp14GiQqbBzOE5c@juandavidcampus.skhedga.mongodb.net/";
+const uri = "mongodb://localhost:27017/";
 const client = new MongoClient(uri);
 const dbName = 'payrollDB';
 
